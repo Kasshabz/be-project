@@ -1,4 +1,5 @@
 const fetchTopcis = require("../models/model");
+const endPoints = require("../endpoints.json");
 const getTopics = (req, res, next) => {
   fetchTopcis()
     .then((topic) => {
@@ -8,4 +9,10 @@ const getTopics = (req, res, next) => {
       next(err);
     });
 };
-module.exports = getTopics;
+
+const getApi = (req, res) => {
+  console.log(endPoints,"end");
+  res.status(200).send(endPoints);
+};
+
+module.exports = { getTopics, getApi };
