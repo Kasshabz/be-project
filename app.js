@@ -1,9 +1,11 @@
 const express = require("express");
-const getTopics = require("./controllers/controller")
+const { getApi, getTopics } = require("./controllers/controller");
+
 
 const app = express();
 app.use(express.json());
 
-app.get("/api/topics",getTopics)
+app.get("/api/topics", getTopics);
+ app.get("/api", getApi);
 
-module.exports = app
+module.exports = app;
