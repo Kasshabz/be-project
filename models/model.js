@@ -7,5 +7,7 @@ const fetchTopcis = () => {
     return result.rows;
   });
 };
-
-module.exports = fetchTopcis;
+const fetchID = ()=>{
+  
+}
+module.exports = {fetchTopcis,fetchID}
