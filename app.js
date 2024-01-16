@@ -7,6 +7,6 @@ app.use(express.json());
 
 app.get("/api/topics", getTopics);
  app.get("/api", getApi);
- app.get("/api/articles/:article_id",getArticleId)
+ app.get("/api/articles/:article_id",getArticleId);
 
 module.exports = app;

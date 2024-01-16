@@ -34,12 +34,12 @@ describe("GET /api/topics", () => {
   });
 });
 describe("Get /api", () => {
-  test.only("should return An object describing all the available endpoints on your API", () => {
+  test("should return An object describing all the available endpoints on your API", () => {
     return request(app)
       .get("/api")
       .expect(200)
       .then((response) => {
-        console.log(response.body.endPoints,"body");
+       
         const endApi = response.body.endPoints
         
         expect(endApi).toMatchObject(endPoints);
@@ -52,17 +52,37 @@ describe("GET api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
+        
         const output = {
+          article_id: 1,
           title: "Living in the shadow of a great man",
           topic: "mitch",
           author: "butter_bridge",
           body: "I find this existence challenging",
-          created_at: 1594329060000,
+          created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         };
-        expect(body).toEqual(output);
+        expect(body.article).toEqual(output);
       });
   });
+  test("should return 404 if id is valid but does not exist",()=>{
+    return request(app).get("/api/articles/1000").expect(404).then(({text})=>{
+     
+    
+      
+      expect(text).toEqual("Article not found")
+
+    })
+  })
+  test("should return 400 if id is not valid" ,()=>{
+    return request(app).get("/api/articles/bananas").expect(400).then(({text})=>{
+    
+    
+      
+      expect(text).toEqual("Article not valid")
+
+    })
+  })
 });
