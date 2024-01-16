@@ -39,9 +39,8 @@ describe("Get /api", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-       
-        const endApi = response.body.endPoints
-        
+        const endApi = response.body.endPoints;
+
         expect(endApi).toMatchObject(endPoints);
       });
   });
@@ -52,7 +51,6 @@ describe("GET api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        
         const output = {
           article_id: 1,
           title: "Living in the shadow of a great man",
@@ -67,22 +65,54 @@ describe("GET api/articles/:article_id", () => {
         expect(body.article).toEqual(output);
       });
   });
-  test("should return 404 if id is valid but does not exist",()=>{
-    return request(app).get("/api/articles/1000").expect(404).then(({text})=>{
-     
-    
-      
-      expect(text).toEqual("Article not found")
-
-    })
-  })
-  test("should return 400 if id is not valid" ,()=>{
-    return request(app).get("/api/articles/bananas").expect(400).then(({text})=>{
-    
-    
-      
-      expect(text).toEqual("Article not valid")
-
-    })
-  })
+  test("should return 404 if id is valid but does not exist", () => {
+    return request(app)
+      .get("/api/articles/1000")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toEqual("Article not found");
+      });
+  });
+  test("should return 400 if id is not valid", () => {
+    return request(app)
+      .get("/api/articles/bananas")
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Article not valid");
+      });
+  });
+});
+describe("Get /api/articles", () => {
+  test("should return all articles with their properties", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+        console.log(article,"article");
+        article.find(
+        
+          ({
+            author,
+            title,
+            article_id,
+            topic,
+            created_at,
+            votes,
+            article_img_url,
+            comment_count,
+          }) => {
+            expect(typeof author).toBe("string");
+            expect(typeof title).toBe("string");
+            expect(typeof article_id).toBe("number");
+            expect(typeof topic).toBe("string");
+            expect(typeof created_at).toBe("string");
+            expect(typeof votes).toBe("number");
+            expect(typeof article_img_url).toBe("string");
+            expect(typeof comment_count).toBe("string");
+            expect(article).toHaveLength(13);
+          }
+        );
+      });
+  });
 });
