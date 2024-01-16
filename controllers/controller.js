@@ -3,7 +3,8 @@ const endPoints = require("../endpoints.json");
 const getTopics = (req, res, next) => {
   fetchTopcis()
     .then((topic) => {
-      res.status(200).send(topic);
+      res.status(200).send({topic});
+   
     })
     .catch((err) => {
       next(err);
@@ -11,7 +12,7 @@ const getTopics = (req, res, next) => {
 };
 
 const getApi = (req, res) => {
-  console.log(endPoints,"end");
+
   res.status(200).send(endPoints);
 };
 
