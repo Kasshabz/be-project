@@ -1,4 +1,4 @@
-const { fetchTopcis, fetchID } = require("../models/model");
+const { fetchTopcis, fetchID,fetchArticles } = require("../models/model");
 const endPoints = require("../endpoints.json");
 const getTopics = (req, res, next) => {
   fetchTopcis()
@@ -18,18 +18,22 @@ const getArticleId = (req, res, next) => {
 
   fetchID(article_id)
     .then((article) => {
-     
       res.status(200).send({ article });
     })
     .catch((err) => {
-      console.log(err,"error here");
-if(err.status && err.msg){
-  res.status(err.status).send(err.msg)
-}
-if(err.code ==='22P02'){
-  res.status(400).send("Article not valid")
-}
+      next(err)
+    
+      
+    });
+};
+const getArticles = (req, res, next) => {
+  console.log("controller");
+  fetchArticles()
+    .then((article) => {
+      res.status(200).send({ article: article });
+    })
+    .catch((err) => {
       next(err);
     });
 };
-module.exports = { getTopics, getApi, getArticleId };
+module.exports = { getTopics, getApi, getArticleId, getArticles };
