@@ -17,13 +17,13 @@ const fetchArticles = () => {
     return rows;
   });
 };
-const fetchArticlesIDcoms = (id) =>{
-  console.log("hello");
-  let queryStr = "SELECT * FROM comments  JOIN articles ON articles.article_id = comments.article_id WHERE articles.article_id = $1  ORDER BY comments.created_at DESC"
-  
-  return db.query(queryStr,[id]).then(({rows})=>{
-return rows
-  })
-}
+const fetchArticlesIDcoms = (id) => {
+  let queryStr =
+    "SELECT * FROM comments  JOIN articles ON articles.article_id = comments.article_id WHERE articles.article_id = $1  ORDER BY comments.created_at DESC";
 
-module.exports = { fetchArticlesID, fetchArticles,fetchArticlesIDcoms };
+  return db.query(queryStr, [id]).then(({ rows }) => {
+    return rows;
+  });
+};
+
+module.exports = { fetchArticlesID, fetchArticles, fetchArticlesIDcoms };
