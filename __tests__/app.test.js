@@ -123,3 +123,26 @@ describe("Get /api/articles", () => {
   });
 });
 
+describe("Get /api/articles/1/comments", () => {
+  test("should return all commets with their properties", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        comment.forEach(
+          ({ comment_id, votes, created_at, author, body, article_id }) => {
+            expect(comment).toBeSortedBy("created_at", { descending: true });
+            expect(comment).toHaveLength(11);
+            expect(article_id).toBe(1);
+            expect(typeof comment_id).toBe("number");
+            expect(typeof author).toBe("string");
+            expect(typeof created_at).toBe("string");
+            expect(typeof votes).toBe("number");
+            expect(typeof body).toBe("string");
+          }
+        );
+      });
+  });
+});
