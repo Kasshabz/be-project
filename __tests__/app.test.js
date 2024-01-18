@@ -25,7 +25,7 @@ describe("GET /api/topics", () => {
       .then(({ body }) => {
         const topic = body.topic;
 
-        topic.find(({ description, slug }) => {
+        topic.forEach(({ description, slug }) => {
           expect(typeof description).toBe("string");
           expect(typeof slug).toBe("string");
           expect(topic).toHaveLength(3);
@@ -89,9 +89,8 @@ describe("Get /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const article = body.article;
-        console.log(article,"article");
-        article.find(
-        
+
+        article.forEach(
           ({
             author,
             title,
@@ -115,4 +114,12 @@ describe("Get /api/articles", () => {
         );
       });
   });
+  test("the articles should be sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .then(({ body }) => {
+        expect(body.article).toBeSortedBy("created_at", { descending: true });
+      });
+  });
 });
+
