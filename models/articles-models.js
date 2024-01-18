@@ -4,7 +4,7 @@ const fetchArticlesID = (id) => {
     .query("SELECT * FROM articles WHERE article_id =$1", [id])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Article not found" });
+        return Promise.reject({ status: 404, msg: "Not found" });
       }
       return rows[0];
     });
@@ -22,8 +22,29 @@ const fetchArticlesIDcoms = (id) => {
     "SELECT * FROM comments  JOIN articles ON articles.article_id = comments.article_id WHERE articles.article_id = $1  ORDER BY comments.created_at DESC";
 
   return db.query(queryStr, [id]).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
     return rows;
   });
 };
+const insertComment = (newComment) => {
+  let postQuery = `INSERT INTO comments (body,author,article_id) VALUES ($1,$2,$3) RETURNING *`;
 
-module.exports = { fetchArticlesID, fetchArticles, fetchArticlesIDcoms };
+  return db
+    .query(postQuery, [
+      newComment.body,
+      newComment.userName,
+      newComment.article_id,
+    ])
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
+
+module.exports = {
+  fetchArticlesID,
+  fetchArticles,
+  fetchArticlesIDcoms,
+  insertComment,
+};

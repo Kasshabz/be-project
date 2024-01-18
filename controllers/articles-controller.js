@@ -2,6 +2,7 @@ const {
   fetchArticlesID,
   fetchArticles,
   fetchArticlesIDcoms,
+  insertComment,
 } = require("../models/articles-models");
 const getArticleId = (req, res, next) => {
   const { article_id } = req.params;
@@ -28,11 +29,22 @@ const getArticleIdComs = (req, res, next) => {
 
   fetchArticlesIDcoms(article_id)
     .then((comment) => {
-      res.status(200).send({ comment: comment });
+      res.status(200).send({ comments: comment });
     })
     .catch((err) => {
       next(err);
     });
 };
+const postComment = (req, res, next) => {
+  const newComment = req.body;
+  insertComment(newComment)
+    .then((comment) => {
+      res.status(201).send({ comment: comment.body });
+    })
+    .catch((err) => {
+     
+      next(err)
+    });
+};
 
-module.exports = { getArticleId, getArticles, getArticleIdComs };
+module.exports = { getArticleId, getArticles, getArticleIdComs, postComment };
