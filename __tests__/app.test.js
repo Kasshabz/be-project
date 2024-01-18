@@ -70,7 +70,7 @@ describe("GET api/articles/:article_id", () => {
       .get("/api/articles/1000")
       .expect(404)
       .then(({ text }) => {
-        expect(text).toEqual("Article not found");
+        expect(text).toEqual("Not found");
       });
   });
   test("should return 400 if id is not valid", () => {
@@ -78,7 +78,7 @@ describe("GET api/articles/:article_id", () => {
       .get("/api/articles/bananas")
       .expect(400)
       .then(({ text }) => {
-        expect(text).toEqual("Article not valid");
+        expect(text).toEqual("Not valid");
       });
   });
 });
@@ -129,12 +129,12 @@ describe("Get /api/articles/1/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        const comment = body.comment;
-
+        const comment = body.comments;
+        expect(comment).toHaveLength(11);
         comment.forEach(
           ({ comment_id, votes, created_at, author, body, article_id }) => {
             expect(comment).toBeSortedBy("created_at", { descending: true });
-            expect(comment).toHaveLength(11);
+
             expect(article_id).toBe(1);
             expect(typeof comment_id).toBe("number");
             expect(typeof author).toBe("string");
@@ -143,6 +143,54 @@ describe("Get /api/articles/1/comments", () => {
             expect(typeof body).toBe("string");
           }
         );
+      });
+  });
+  test("should return 404 if id is valid but does not exist", () => {
+    return request(app)
+      .get("/api/articles/1000/comments")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toEqual("Not found");
+      });
+  });
+  test("should return 400 if id is not valid", () => {
+    return request(app)
+      .get("/api/articles/bananas/comments")
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Not valid");
+      });
+  });
+});
+describe("Post /api/articles/1/comments", () => {
+  test("Should return with the newly added comments", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        article_id: 1,
+        userName: "rogersop",
+        body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+      })
+      .expect(201)
+      .then((response) => {
+        const outPut =
+          "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better";
+        expect(response.body.comment).toEqual(outPut);
+      });
+  });
+  test.only("Should return with the a bad request if username missing", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        article_id: 1,
+
+        body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+      })
+      .expect(400)
+      .then(({text}) => {
+
+      
+        expect(text).toEqual('null value in column "author"');
       });
   });
 });
