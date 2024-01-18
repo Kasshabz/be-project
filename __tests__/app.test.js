@@ -124,7 +124,7 @@ describe("Get /api/articles", () => {
 });
 
 describe("Get /api/articles/1/comments", () => {
-  test.only("should return all commets with their properties", () => {
+  test("should return all commets with their properties", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
