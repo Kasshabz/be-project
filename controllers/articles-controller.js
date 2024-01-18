@@ -1,4 +1,4 @@
-const { fetchArticlesID, fetchArticles,fetchArticlesQ} = require("../models/articles-models");
+const { fetchArticlesID, fetchArticles,fetchArticlesIDcoms} = require("../models/articles-models");
 const getArticleId = (req, res, next) => {
   const { article_id } = req.params;
 
@@ -21,9 +21,19 @@ const getArticles = (req, res, next) => {
       next(err);
     });
 };
+const getArticleIdComs = (req,res,next)=>{
+  const { article_id } = req.params;
+  console.log(article_id,"article");
+  fetchArticlesIDcoms(article_id).then((comment)=>{
+res.status(200).send({comment:comment})
+  })
+  .catch((err)=>{
+next(err)
+  })
+}
 
 
 
 
 
-module.exports = { getArticleId, getArticles };
+module.exports = { getArticleId, getArticles,getArticleIdComs };
