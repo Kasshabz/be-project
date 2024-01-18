@@ -187,9 +187,7 @@ describe("Post /api/articles/1/comments", () => {
         body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
       })
       .expect(400)
-      .then(({text}) => {
-
-      
+      .then(({ text }) => {
         expect(text).toEqual('null value in column "author"');
       });
   });
