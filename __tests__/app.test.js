@@ -24,7 +24,6 @@ describe("GET /api/topics", () => {
       .expect(200)
       .then(({ body }) => {
         const topic = body.topic;
-
         topic.forEach(({ description, slug }) => {
           expect(typeof description).toBe("string");
           expect(typeof slug).toBe("string");
@@ -40,7 +39,6 @@ describe("Get /api", () => {
       .expect(200)
       .then((response) => {
         const endApi = response.body.endPoints;
-
         expect(endApi).toMatchObject(endPoints);
       });
   });
@@ -89,7 +87,6 @@ describe("Get /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const article = body.article;
-
         article.forEach(
           ({
             author,
@@ -134,7 +131,6 @@ describe("Get /api/articles/1/comments", () => {
         comment.forEach(
           ({ comment_id, votes, created_at, author, body, article_id }) => {
             expect(comment).toBeSortedBy("created_at", { descending: true });
-
             expect(article_id).toBe(1);
             expect(typeof comment_id).toBe("number");
             expect(typeof author).toBe("string");
@@ -167,7 +163,6 @@ describe("Post /api/articles/1/comments", () => {
     return request(app)
       .post("/api/articles/1/comments")
       .send({
-        article_id: 1,
         userName: "rogersop",
         body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
       })
@@ -178,17 +173,124 @@ describe("Post /api/articles/1/comments", () => {
         expect(response.body.comment).toEqual(outPut);
       });
   });
-  test.only("Should return with the a bad request if username missing", () => {
+  test("Should return with the a bad request if username missing", () => {
     return request(app)
       .post("/api/articles/1/comments")
       .send({
-        article_id: 1,
-
         body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
       })
       .expect(400)
       .then(({ text }) => {
-        expect(text).toEqual('null value in column "author"');
+        expect(text).toEqual("null value");
+      });
+  });
+  test("Should return with the a 404 if id non existent", () => {
+    return request(app)
+      .post("/api/articles/100/comments")
+      .send({
+        userName: "rogersop",
+        body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+      })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Null value");
+      });
+  });
+  test("Should return with the a 400 if id is not valid", () => {
+    return request(app)
+      .post("/api/articles/hi/comments")
+      .send({
+        userName: "rogersop",
+        body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+      })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Not valid");
+      });
+  });
+  test("Should return with 201 if extra properties exist", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        userName: "rogersop",
+        body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+        votes: 10,
+      })
+      .expect(201)
+      .then((response) => {
+        const outPut =
+          "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better";
+        expect(response.body.comment).toEqual(outPut);
+      });
+  });
+  test("Should return with the a bad request if body missing", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ userName: "rogersop" })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("null value");
+      });
+  });
+  test("Should return with the a 400 if username is not valid", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        userName: "kas",
+        body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+      })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Null value");
+      });
+  });
+});
+describe("Patch /api/articles/1", () => {
+  test("Should return with an updated article", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then((response) => {
+        const output = {
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 110,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        };
+        expect(response.body.upArticle).toEqual(output);
+      });
+  });
+  test("Should return with 400 null value if the object is passed a string as value", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "hi" })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Not valid");
+      });
+  });
+  test("Should return with 404 not found if the endpoint is a path that does not exist", () => {
+    return request(app)
+      .patch("/api/articles/1000")
+      .send({ inc_votes: 10 })
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toEqual("Not found");
+      });
+  });
+  test("Should return with 400 not found if the endpoint path is not valid", () => {
+    return request(app)
+      .patch("/api/articles/bananas")
+      .send({ inc_votes: 10 })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Not valid");
       });
   });
 });

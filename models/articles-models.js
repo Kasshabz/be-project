@@ -28,23 +28,35 @@ const fetchArticlesIDcoms = (id) => {
     return rows;
   });
 };
-const insertComment = (newComment) => {
-  let postQuery = `INSERT INTO comments (body,author,article_id) VALUES ($1,$2,$3) RETURNING *`;
+const insertComment = (newComment, id) => {
+  let postQuery = `INSERT INTO comments (body,author,article_id) VALUES ($1,$2,$3)  RETURNING *`;
 
   return db
-    .query(postQuery, [
-      newComment.body,
-      newComment.userName,
-      newComment.article_id,
-    ])
+    .query(postQuery, [newComment.body, newComment.userName, id])
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
       return rows[0];
     });
 };
-
+const updateArticle = (updatedArticle, id) => {
+  return db
+    .query(
+      `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
+      [updatedArticle.inc_votes, id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      return rows[0];
+    });
+};
 module.exports = {
   fetchArticlesID,
   fetchArticles,
   fetchArticlesIDcoms,
   insertComment,
+  updateArticle,
 };
