@@ -311,7 +311,7 @@ describe("Delete comments", () => {
   test("Delete a certain comment by it's id", () => {
     return request(app).delete("/api/comments/1").expect(204);
   });
-  test("should return 400 if comment id is valid but does not exist", () => {
+  test("should return 400 if comment id is not valid", () => {
     return request(app)
       .delete("/api/comments/hey")
       .expect(400)
