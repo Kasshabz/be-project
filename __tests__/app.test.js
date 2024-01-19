@@ -319,4 +319,12 @@ describe("Delete comments", () => {
         expect(text).toEqual("Not valid");
       });
   });
+  test("should return 404 if comment_id is valid but does not exist", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toEqual("Not found");
+      });
+  });
 });
