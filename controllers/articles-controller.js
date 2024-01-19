@@ -3,6 +3,7 @@ const {
   fetchArticles,
   fetchArticlesIDcoms,
   insertComment,
+  updateArticle,
 } = require("../models/articles-models");
 const getArticleId = (req, res, next) => {
   const { article_id } = req.params;
@@ -37,14 +38,30 @@ const getArticleIdComs = (req, res, next) => {
 };
 const postComment = (req, res, next) => {
   const newComment = req.body;
-  insertComment(newComment)
+  const { article_id } = req.params;
+  insertComment(newComment, article_id)
     .then((comment) => {
       res.status(201).send({ comment: comment.body });
     })
     .catch((err) => {
-     
-      next(err)
+      next(err);
     });
 };
-
-module.exports = { getArticleId, getArticles, getArticleIdComs, postComment };
+const patchArticleId = (req, res, next) => {
+  const updatedArticle = req.body;
+  const { article_id } = req.params;
+  updateArticle(updatedArticle, article_id)
+    .then((article) => {
+      res.status(200).send({ upArticle: article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+module.exports = {
+  getArticleId,
+  getArticles,
+  getArticleIdComs,
+  postComment,
+  patchArticleId,
+};

@@ -15,9 +15,14 @@ const customErrorHandler = (err,req,res,next)=>{
 }
 const postError = (err,req,res,next)=>{
     if(err.code==='23502'){
-        res.status(400).send('null value in column "author"')
+        res.status(400).send('null value')
     }else{
         next(err)
+    }
+}
+const missingUserErr = (err,req,res,next)=>{
+    if(err.code === '23503' ){
+        res.status(400).send('Null value')
     }
 }
 const serverError = (err,req,res,next)=>{
@@ -25,4 +30,4 @@ const serverError = (err,req,res,next)=>{
     res.status(500).send({msg:"Internal Server error"})
     }
    
-module.exports = {psqlErrorHandler,customErrorHandler,serverError,postError}
+module.exports = {psqlErrorHandler,customErrorHandler,postError,serverError,missingUserErr}
