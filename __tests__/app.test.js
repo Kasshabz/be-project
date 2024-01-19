@@ -17,7 +17,6 @@ describe("GET /api/topics", () => {
   test("should return with a 200 status code", () => {
     return request(app).get("/api/topics").expect(200);
   });
-
   test("should return with a property of slug and description", () => {
     return request(app)
       .get("/api/topics")
@@ -325,6 +324,23 @@ describe("Delete comments", () => {
       .expect(404)
       .then(({ text }) => {
         expect(text).toEqual("Not found");
+      });
+  });
+});
+
+describe.only("Get /api/users", () => {
+  test("should return all articles with their properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const users = body.users;
+        expect(users).toHaveLength(4);
+        users.forEach(({ username, name, avatar_url }) => {
+          expect(typeof username).toBe("string");
+          expect(typeof name).toBe("string");
+          expect(typeof avatar_url).toBe("string");
+        });
       });
   });
 });
