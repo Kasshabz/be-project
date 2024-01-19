@@ -168,8 +168,14 @@ describe("Post /api/articles/1/comments", () => {
       })
       .expect(201)
       .then((response) => {
-        const outPut =
-          "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better";
+        const outPut = {
+          comment_id: 19,
+          body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+          article_id: 1,
+          author: "rogersop",
+          votes: 0,
+          created_at: response.body.comment.created_at,
+        };
         expect(response.body.comment).toEqual(outPut);
       });
   });
@@ -218,8 +224,15 @@ describe("Post /api/articles/1/comments", () => {
       })
       .expect(201)
       .then((response) => {
-        const outPut =
-          "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better";
+        const outPut = {
+          comment_id: 19,
+          body: "Gives a good insight in living under the pressure to achieve the same as a prodecessor or to be better",
+          article_id: 1,
+          author: "rogersop",
+          votes: 0,
+          created_at: response.body.comment.created_at,
+        };
+
         expect(response.body.comment).toEqual(outPut);
       });
   });
@@ -288,6 +301,19 @@ describe("Patch /api/articles/1", () => {
     return request(app)
       .patch("/api/articles/bananas")
       .send({ inc_votes: 10 })
+      .expect(400)
+      .then(({ text }) => {
+        expect(text).toEqual("Not valid");
+      });
+  });
+});
+describe("Delete comments", () => {
+  test("Delete a certain comment by it's id", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("should return 400 if comment id is valid but does not exist", () => {
+    return request(app)
+      .delete("/api/comments/hey")
       .expect(400)
       .then(({ text }) => {
         expect(text).toEqual("Not valid");
