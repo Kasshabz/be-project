@@ -344,3 +344,24 @@ describe.only("Get /api/users", () => {
       });
   });
 });
+describe("GET /api/articles (topic query)", () => {
+  test.only("should return the article by it's topics", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.article;
+
+        const output = {
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: 1596464040000,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        };
+        expect(articles).toEqual(output);
+      });
+  });
+});

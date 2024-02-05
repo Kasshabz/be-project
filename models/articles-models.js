@@ -53,10 +53,38 @@ const updateArticle = (updatedArticle, id) => {
       return rows[0];
     });
 };
+const fetchQueryT = (query) => {
+  if (query) {
+    return db
+      .query(`SELECT * FROM articles WHERE topic = $1`, [query])
+      .then(({ rows }) => {
+      
+        return rows;
+      })
+      .catch((error) => {
+        console.error("Error in fetchQueryT:", error);
+        next(error);
+      });
+  } else {
+    // If no topic is provided, fetch all articles
+    return db
+      .query(`SELECT * FROM articles`)
+      .then(({ rows }) => {
+        console.log(rows, "model");
+        return rows;
+      })
+      .catch((error) => {
+        console.error("Error in fetchQueryT:", error);
+        throw error;
+      });
+  }
+};
+
 module.exports = {
   fetchArticlesID,
   fetchArticles,
   fetchArticlesIDcoms,
   insertComment,
   updateArticle,
+  fetchQueryT,
 };

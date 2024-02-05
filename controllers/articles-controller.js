@@ -4,6 +4,7 @@ const {
   fetchArticlesIDcoms,
   insertComment,
   updateArticle,
+  fetchQueryT
 } = require("../models/articles-models");
 const getArticleId = (req, res, next) => {
   const { article_id } = req.params;
@@ -58,10 +59,26 @@ const patchArticleId = (req, res, next) => {
       next(err);
     });
 };
+const getQueryT = (req,res,next)=>{
+
+  const topic = req.query.topic
+  console.log(topic,"controller");
+  fetchQueryT(topic).then((cats)=>{
+    console.log(cats,"cats");
+    res.status(200).send({cats:cats})
+
+  }).catch((err)=>{
+    next(err)
+
+  })
+
+}
 module.exports = {
   getArticleId,
   getArticles,
   getArticleIdComs,
   postComment,
   patchArticleId,
+  getQueryT
+  
 };
