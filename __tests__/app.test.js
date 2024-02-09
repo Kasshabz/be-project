@@ -189,7 +189,7 @@ describe("Post /api/articles/1/comments", () => {
         expect(text).toEqual("null value");
       });
   });
-  test("Should return with the a 404 if id non existent", () => {
+  test("Should return with the a 400 if id non existent", () => {
     return request(app)
       .post("/api/articles/100/comments")
       .send({
@@ -345,7 +345,7 @@ describe.only("Get /api/users", () => {
   });
 });
 describe("GET /api/articles (topic query)", () => {
-  test.only("should return the article by it's topics", () => {
+  test("should return the article by it's topics", () => {
     return request(app)
       .get("/api/articles?topic=cats")
       .expect(200)
