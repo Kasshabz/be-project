@@ -120,7 +120,7 @@ describe("Get /api/articles", () => {
 });
 
 describe("Get /api/articles/1/comments", () => {
-  test("should return all commets with their properties", () => {
+  test.only("should return all comments with their properties", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)

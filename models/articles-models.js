@@ -19,9 +19,10 @@ const fetchArticles = () => {
 };
 const fetchArticlesIDcoms = (id) => {
   let queryStr =
-    "SELECT * FROM comments  JOIN articles ON articles.article_id = comments.article_id WHERE articles.article_id = $1  ORDER BY comments.created_at DESC";
+    "SELECT * FROM comments WHERE article_id = $1  ORDER BY created_at DESC";
 
   return db.query(queryStr, [id]).then(({ rows }) => {
+    console.log(rows);
     if (rows.length === 0) {
       return Promise.reject({ status: 404, msg: "Not found" });
     }
@@ -58,7 +59,6 @@ const fetchQueryT = (query) => {
     return db
       .query(`SELECT * FROM articles WHERE topic = $1`, [query])
       .then(({ rows }) => {
-      
         return rows;
       })
       .catch((error) => {
